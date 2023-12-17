@@ -31,11 +31,11 @@ const create = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    const { username } = req.params
-    if (!mongoose.Types.ObjectId.isValid(username)) {
-        return res.status(404).json({ error: 'No username here' })
+    const { id } = req.params
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'No id here' })
     }
-    const user = await User.findOneAndUpdate({ _username: username }, {
+    const user = await User.findOneAndUpdate({ _id: id }, {
         ...req.body
     })
     if (!user) {
@@ -45,13 +45,13 @@ const update = async (req, res) => {
 }
 
 const destroy = async (req, res) => {
-    const { username } = req.params
-    if (!mongoose.Types.ObjectId.isValid(username)) {
-        return res.status(404).json({ error: 'No username here' })
+    const { id } = req.params
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'No id here' })
     }
-    const user = await User.findOneAndDelete({ _username: username })
+    const user = await User.findOneAndDelete({ _id: id })
     if (!user) {
-        return res.status(404).json({ error: 'No username here' })
+        return res.status(404).json({ error: 'No id here' })
     }
     res.status(200).json(user)
 }
