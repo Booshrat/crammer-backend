@@ -1,17 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose')
 const userRoutes = require('./routes/userRoutes')
-
-
-// const cors = require('cors');
+const cors = require('cors');
 
 const app = express()
 const port = 3000
 const URI = 'mongodb://localhost:27017'
 
-
-// api.use(cors());
-
+app.use(cors());
 app.use(express.json())
 
 app.use((req, res, next) => {
