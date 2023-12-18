@@ -9,10 +9,10 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, "A user needs a password"]
-    }
-
+    },
+    flashcards: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flashcard' }]
 }, {})
 
 const User = mongoose.model('User', userSchema)
 
-module.exports = User
+module.exports = User 
