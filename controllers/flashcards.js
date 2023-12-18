@@ -39,7 +39,6 @@ const getAll = async (req, res) => {
 
         res.status(200).json(flashcards);
     } catch (error) {
-        console.log("Helloooo")
         res.status(400).json({ error: error.message });
     }
 };
@@ -66,7 +65,6 @@ const deleteFlashcard = async (req, res) => {
 
         res.status(200).json({ message: 'Flashcard deleted' });
     } catch (error) {
-        console.log(error.message)
         res.status(400).json({ error: error.message });
     }
 };
