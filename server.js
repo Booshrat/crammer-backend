@@ -34,3 +34,4 @@ mongoose.connect(URI)
         console.log(error)
     })
 
+module.exports = server

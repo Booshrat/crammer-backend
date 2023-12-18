@@ -9,6 +9,10 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, "A user needs a password"]
+    },
+    score: {
+        type: Number,
+        min: [0, "User score cannot be below zero"]
     }
 
 }, {})
