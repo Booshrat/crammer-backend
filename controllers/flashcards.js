@@ -44,22 +44,6 @@ const getAll = async (req, res) => {
     }
 };
 
-// const getOne = async (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         const flashcard = await Flashcard.findOne({ _id: id, user: req.user._id });
-
-//         if (!flashcard) {
-//             return res.status(404).json({ error: 'Flashcard not found' });
-//         }
-
-//         res.status(200).json(flashcard);
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// };
-
-
 const deleteFlashcard = async (req, res) => {
     try {
         const { id } = req.params;
@@ -87,29 +71,9 @@ const deleteFlashcard = async (req, res) => {
     }
 };
 
-// const update = async (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         const flashcard = await Flashcard.findOneAndUpdate(
-//             { _id: id, user: req.user._id }, 
-//             req.body, 
-//             { new: true }
-//         );
-
-//         if (!flashcard) {
-//             return res.status(404).json({ error: 'Flashcard not found' });
-//         }
-
-//         res.status(200).json(flashcard);
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// };
 
 module.exports = {
     create,
     getAll,
-    // getOne,
-    // update,
     delete: deleteFlashcard
 };
