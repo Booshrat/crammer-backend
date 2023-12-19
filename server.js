@@ -2,13 +2,14 @@ const express = require('express');
 const mongoose = require('mongoose')
 const userRoutes = require('./routes/userRoutes')
 const flashcardRoutes = require('./routes/flashcardRoutes')
+const quizRoutes = require('./routes/quizRoutes')
 const cors = require('cors');
 const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-const URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/crammer-app';
+const URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
 
 app.use(cors());
 app.use(express.json());
@@ -20,6 +21,7 @@ app.use((req, res, next) => {
 
 app.use('/user', userRoutes)
 app.use('/flashcard', flashcardRoutes)
+app.use('./quiz', quizRoutes)
 
 
 app.get("/", (req, res) => {
