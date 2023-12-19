@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
 
 
 app.get("/fetch-and-store-trivia", async (req, res) => {
-=======
+
 mongoose.connect(URI)
     .then(() => {
         server.listen(port, () => {
