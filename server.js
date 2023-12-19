@@ -2,32 +2,38 @@ const express = require('express');
 const mongoose = require('mongoose')
 const userRoutes = require('./routes/userRoutes')
 const flashcardRoutes = require('./routes/flashcardRoutes')
+const quizRoutes = require('./routes/quizRoutes')
 const cors = require('cors');
 const axios = require('axios');
 require('dotenv').config();
 
-const server = express()
-const port = 3000
-const URI = 'mongodb://localhost:27017'
+const app = express();
+const port = process.env.PORT || 3000;
+const URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
 
-server.use(cors());
-server.use(express.json())
+app.use(cors());
+app.use(express.json());
 
-server.use((req, res, next) => {
-    console.log(req.path, req.method)
-    next()
-})
+app.use((req, res, next) => {
+    console.log(req.path, req.method);
+    next();
+});
 
-server.use('/user', userRoutes)
-server.use('/flashcard', flashcardRoutes)
+app.use('/user', userRoutes)
+app.use('/flashcard', flashcardRoutes)
+app.use('./quiz', quizRoutes)
 
-server.get("/", (req, res) => {
+
+app.get("/", (req, res) => {
     res.json({
         title: "Crammer App",
         description: "Take part in the quizzes and create your own flashcards"
     });
 });
 
+
+app.get("/fetch-and-store-trivia", async (req, res) => {
+=======
 mongoose.connect(URI)
     .then(() => {
         server.listen(port, () => {
@@ -38,7 +44,8 @@ mongoose.connect(URI)
         console.log(error)
     })
 
-server.get("/fetch-and-store-trivia", async (req, res) => {
+
+
     try {
         // Use the 'SECRET' variable in your code
         const secret = process.env.SECRET;
@@ -63,5 +70,13 @@ server.get("/fetch-and-store-trivia", async (req, res) => {
     }
 });
 
-
-module.exports = server;
+mongoose.connect(URI)
+  .then(() => {
+    console.log('Connected to MongoDB!');
+    app.listen(port, () => {
+      console.log(`Listening on port ${port}!`);
+    });
+  })
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error);
+  });
