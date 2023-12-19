@@ -21,7 +21,7 @@ app.use((req, res, next) => {
 
 app.use('/user', userRoutes)
 app.use('/flashcard', flashcardRoutes)
-app.use('./quiz', quizRoutes)
+app.use('/quiz', quizRoutes)
 
 
 app.get("/", (req, res) => {
@@ -66,3 +66,5 @@ mongoose.connect(URI)
   .catch((error) => {
     console.error('Error connecting to MongoDB:', error);
   });
+
+module.exports = app
