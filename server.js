@@ -4,23 +4,23 @@ const userRoutes = require('./routes/userRoutes')
 const flashcardRoutes = require('./routes/flashcardRoutes')
 const cors = require('cors');
 
-const app = express()
+const server = express()
 const port = 3000
 const URI = 'mongodb://localhost:27017'
 
-app.use(cors());
-app.use(express.json())
+server.use(cors());
+server.use(express.json())
 
-app.use((req, res, next) => {
+server.use((req, res, next) => {
     console.log(req.path, req.method)
     next()
 })
 
-app.use('/user', userRoutes)
-app.use('/flashcard', flashcardRoutes)
+server.use('/user', userRoutes)
+server.use('/flashcard', flashcardRoutes)
 
 
-app.get("/", (req, res) => {
+server.get("/", (req, res) => {
     res.json({
         title: "Crammer App",
         description: "Take part in the quizes and create your own flashcards"
@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 
 mongoose.connect(URI)
     .then(() => {
-        app.listen(port, () => {
+        server.listen(port, () => {
             console.log(`Connected to DB & Listening on port ${port}!`)
         })
     })
@@ -37,4 +37,4 @@ mongoose.connect(URI)
         console.log(error)
     })
 
-module.exports = server
+module.exports = server;

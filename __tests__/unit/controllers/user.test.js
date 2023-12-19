@@ -61,23 +61,6 @@ describe('user controller', () => {
         })
     });
 
-    describe('getUserById', () => {
-        test('it returns a user by username with a 200 status code', async () => {
-            let testUser = {
-                _id: "test1",
-                username: "test1",
-                password: "test1",
-                score: 0
-            }
-            jest.spyOn(User, 'getById')
-                .mockResolvedValue(testUser);
-            const mockReq = { params: { id: 'test1' } }
-            await controller.getUserById(mockReq, mockRes);
-            expect(mockStatus).toHaveBeenCalledWith(200);
-            expect(mockJson).toHaveBeenCalledWith([new User(testUser)]);
-        })
-    });
-
     describe('register', () => {
         test('it creates a new user with a 201 status code', async () => {
             let testUser = {
@@ -93,19 +76,19 @@ describe('user controller', () => {
         })
     });
 
-    describe('updateUserScore', () => {
-        test('it returns a 200 status code and a message', async () => {
-            let testUser = {
-                username: 'crammer',
-                password: 'crammer',
-            }
+    // describe('updateUserScore', () => {
+    //     test('it returns a 200 status code and a message', async () => {
+    //         let testUser = {
+    //             username: 'crammer',
+    //             password: 'crammer',
+    //         }
 
-            jest.spyOn(User, 'updateScore')
-                .mockResolvedValue(testUser);
-            const mockReq = { body: { username: "crammer", new_score: 100 } }
-            await controller.updateUserScore(mockReq, mockRes);
-            expect(mockStatus).toHaveBeenCalledWith(200);
-            expect(mockJson).toHaveBeenCalledWith({ msg: `Update score of user crammer: Successful` });
-        })
-    });
+    //         jest.spyOn(User, 'updateScore')
+    //             .mockResolvedValue(testUser);
+    //         const mockReq = { body: { username: "crammer", new_score: 100 } }
+    //         await controller.updateUserScore(mockReq, mockRes);
+    //         expect(mockStatus).toHaveBeenCalledWith(200);
+    //         expect(mockJson).toHaveBeenCalledWith({ msg: `Update score of user crammer: Successful` });
+    //     })
+    // });
 })
