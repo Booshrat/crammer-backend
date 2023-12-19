@@ -6,28 +6,37 @@ const cors = require('cors');
 const axios = require('axios');
 require('dotenv').config();
 
-const app = express();
-const port = process.env.PORT || 3000;
-const URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/crammer-app';
+const server = express()
+const port = 3000
+const URI = 'mongodb://localhost:27017'
 
-app.use(cors());
-app.use(express.json());
+server.use(cors());
+server.use(express.json())
 
-app.use((req, res, next) => {
-    console.log(req.path, req.method);
-    next();
-});
+server.use((req, res, next) => {
+    console.log(req.path, req.method)
+    next()
+})
 
-app.use('/user', userRoutes)
-app.use('/flashcard', flashcardRoutes)
+server.use('/user', userRoutes)
+server.use('/flashcard', flashcardRoutes)
 
-
-app.get("/", (req, res) => {
+server.get("/", (req, res) => {
     res.json({
         title: "Crammer App",
         description: "Take part in the quizzes and create your own flashcards"
     });
 });
+
+mongoose.connect(URI)
+    .then(() => {
+        server.listen(port, () => {
+            console.log(`Connected to DB & Listening on port ${port}!`)
+        })
+    })
+    .catch((error) => {
+        console.log(error)
+    })
 
 app.get("/fetch-and-store-trivia", async (req, res) => {
     try {
@@ -54,13 +63,5 @@ app.get("/fetch-and-store-trivia", async (req, res) => {
     }
 });
 
-mongoose.connect(URI)
-  .then(() => {
-    console.log('Connected to MongoDB!');
-    app.listen(port, () => {
-      console.log(`Listening on port ${port}!`);
-    });
-  })
-  .catch((error) => {
-    console.error('Error connecting to MongoDB:', error);
-  });
+
+module.exports = server;
