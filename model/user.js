@@ -10,6 +10,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "A user needs a password"]
     },
+    score: {
+        type: Number,
+        min: [0, "A user cannot have a score less than 0"]
+    },
     flashcards: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flashcard' }]
 }, {})
 
