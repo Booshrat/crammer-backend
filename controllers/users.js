@@ -12,10 +12,6 @@ const index = async (req, res) => {
 
 const show = async (req, res) => {
     const { username } = req.params
-    if (!mongoose.Types.ObjectId.isValid(username)) {
-        return res.status(404).json({ error: 'No username here' })
-    }
-
     const user = await User.findOne({ username: username })
     if (!user) {
         return res.status(404).json({ error: 'No user here' })
