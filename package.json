@@ -4,8 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "jest --detectOpenHandles --runInBand --verbose --coverage",
     "dev": "nodemon -L server.js",
+    "start": "nodemon -L server.js",
+    "test": "jest --detectOpenHandles --runInBand --verbose --coverage",
     "unitTests": "jest --testPathPattern=/unit/ --verbose",
     "coverage": "jest --testPathPattern=/unit/ --coverage"
   },
@@ -17,6 +18,7 @@
   },
   "dependencies": {
     "@shelf/jest-mongodb": "^4.2.0",
+    "axios": "^1.6.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
