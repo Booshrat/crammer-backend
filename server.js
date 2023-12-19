@@ -38,7 +38,7 @@ mongoose.connect(URI)
         console.log(error)
     })
 
-app.get("/fetch-and-store-trivia", async (req, res) => {
+server.get("/fetch-and-store-trivia", async (req, res) => {
     try {
         // Use the 'SECRET' variable in your code
         const secret = process.env.SECRET;
@@ -46,7 +46,7 @@ app.get("/fetch-and-store-trivia", async (req, res) => {
 
         // Make a request to the Trivia API
         const response = await axios.get('https://the-trivia-api.com/v2/questions/');
-        
+    
         // Assuming the response data is an array of trivia questions
         const triviaQuestions = response.data;
 

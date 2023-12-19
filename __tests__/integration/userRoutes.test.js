@@ -36,9 +36,8 @@ describe('users endpoints', () => {
         await api.close()
     })
 
-    test('Should check server up', async (done) => {
+    test('Should check server up', async () => {
         const res = await request(api).get('/')
         expect(res.statusCode).toEqual(200)
-        .end(done)
     })
   });
