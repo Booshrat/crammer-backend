@@ -1,6 +1,7 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const userRoutes = require('./routes/userRoutes');
+const mongoose = require('mongoose')
+const userRoutes = require('./routes/userRoutes')
+const flashcardRoutes = require('./routes/flashcardRoutes')
 const cors = require('cors');
 const axios = require('axios');
 require('dotenv').config();
@@ -17,7 +18,9 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/user', userRoutes);
+app.use('/user', userRoutes)
+app.use('/flashcard', flashcardRoutes)
+
 
 app.get("/", (req, res) => {
     res.json({
