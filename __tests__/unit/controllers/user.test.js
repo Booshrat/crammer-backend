@@ -74,75 +74,36 @@ describe('user controller', () => {
             expect(mockStatus).toHaveBeenCalledWith(201);
             expect(mockJson).toHaveBeenCalledWith(testUser);
         })
-    });
-
-    describe('update', () => {
-        test('it updates a user with a valid ID and returns 200 status code', async () => {
-            let testUser = {
-                username: 'test1',
-                password: 'test1',
-            }
-            jest.spyOn(User, 'findOneAndUpdate')
-                .mockResolvedValue(testUser);
-            const mockReq = { body: { username: 'test1', password: 'test1' } }
-            await controller.update(mockReq, mockRes);
-            expect(mockStatus).toHaveBeenCalledWith(200);
-            expect(mockJson).toHaveBeenCalledWith(testUser);
+        test('it returns a 500 if register is not working', async () => {
+            jest.spyOn(User, 'create')
+                .mockResolvedValue(null);
+            const errReq = { params: { username: 'test2' } }
+            await controller.show(errReq, mockRes)
+            expect(mockStatus).toHaveBeenCalledWith(404);
+            expect(mockJson).toHaveBeenCalledWith({ error: 'No user here' })
         })
     });
 
-
-
-    // describe('update', () => {
-    //     test('it updates a user with a valid ID and returns 200 status code', async () => {
-    //         const validUserId = 'test1';
-    //         const requestBody = {
-    //             username: 'test1',
-    //             password: 'test1',
-    //             score: 0,
-    //         };
-    //         User.findOneAndUpdate = jest.fn().mockResolvedValueOnce(requestBody);
-    //         const mockReq = {params: { id: validUserId }, body: requestBody };
-    //         await controller.update(mockReq, mockRes);
-    //         console.log(mockReq)
-    //         expect(User.findOneAndUpdate).toHaveBeenCalledWith({ _id: validUserId }, { ...requestBody });
-    //         expect(mockRes.status).toHaveBeenCalledWith(200);
-    //         expect(mockRes.json).toHaveBeenCalledWith(requestBody);
-    //     });
-
-
-
-    // test('it returns a 404 status code for an invalid ID', async () => {
-    //     const invalidUserId = 'test404'; // Replace with an invalid user ID
-
-    //     const mockReq = {
-    //         params: { id: invalidUserId },
-    //     };
-
-    //     await controller.update(mockReq, mockRes);
-
-    //     expect(mockRes.status).toHaveBeenCalledWith(404);
-    //     expect(mockRes.json).toHaveBeenCalledWith({ error: 'No id here' });
-    // });
-    // test('it returns a 404 status code when no user is found', async () => {
-    //     const validUserId = 'testNoUseFound'; // Replace with a valid user ID
-
-    //     const mockReq = {
-    //         params: { id: validUserId },
-    //         body: { /* Replace with the data you want to update */ },
-    //     };
-
-    //     // Mocking the findOneAndUpdate method to return null
-    //     User.findOneAndUpdate = jest.fn().mockResolvedValueOnce(null);
-
-    //     await controller.update(mockReq, mockRes);
-
-    //     expect(mockRes.status).toHaveBeenCalledWith(404);
-    //     expect(mockRes.json).toHaveBeenCalledWith({ error: 'No user here' });
-    // });
-    // });
-
-
+    describe('update', () => {
+        it('should return a 404 with error if id is not valid', async () => {
+            let testUser = 'test1'
+            jest.spyOn(User, 'findOneAndUpdate')
+                .mockResolvedValue(testUser);
+            const mockReq = { params: { id: testUser }, body: { username: "example" } };
+            await controller.update(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(404);
+            expect(mockJson).toHaveBeenCalledWith({ error: 'No id here' });
+        });
+        test('it updates a user with a valid ID and returns 200 status code', async () => {
+            let testUser = 1;
+            jest.spyOn(User, 'findOneAndUpdate')
+            .mockResolvedValue(testUser);
+            const mockReq = { params: { id: testUser }, body: { username: "example" } };
+            await controller.update(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(200);
+            expect(mockJson).toHaveBeenCalledWith(1);
+        })
+    });
 
     // describe('updateUserScore', () => {
     //     test('it returns a 200 status code and a message', async () => {
