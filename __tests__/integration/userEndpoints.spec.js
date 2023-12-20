@@ -5,8 +5,8 @@ describe("user endpoint", () => {
   let server;
 
   beforeAll((done) => {
-    server = app.listen(4001, () => {
-      console.log("Test server running on port 4000");
+    server = app.listen(() => {
+      console.log("Test server running on port 4001");
       done();
     });
   });
@@ -32,4 +32,12 @@ describe("user endpoint", () => {
     const response = await request(server).get(`/user/${userName}`);
     expect(response.statusCode).toBe(404);
   });
+
+  test('responds to POST / users with status 201', () => {
+    const userData = {
+      username: "testUser",
+      password: "test"
+    }
+    request(server).post('/user/register').send(userData).expect(201);
+  })
 });
