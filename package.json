@@ -7,7 +7,7 @@
     "dev": "nodemon -L server.js",
     "start": "nodemon -L server.js",
     "test": "jest --detectOpenHandles --runInBand --verbose --coverage",
-    "integrationTests": "cross-env NODE_ENV=test jest --testPathPattern=/integration/quizEndpoints.spec.js --detectOpenHandles --runInBand --verbose --forceExit",
+    "integrationTests": "cross-env NODE_ENV=test jest --testPathPattern=/integration/ --detectOpenHandles --runInBand --verbose --forceExit",
     "unitTests": "jest --testPathPattern=/unit/ --verbose",
     "coverage": "jest --testPathPattern=/unit/ --coverage",
     "integrationCoverage": "jest --testPathPattern=/integration/ --coverage"
