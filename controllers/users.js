@@ -16,6 +16,7 @@ const show = async (req, res) => {
     if (!user) {
         return res.status(404).json({ error: 'No user here' })
     }
+
     res.status(200).json(user)
 }
 

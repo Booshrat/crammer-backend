@@ -9,7 +9,8 @@ require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-const URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
+const URI = process.env.MONGODB_URI 
+// || 'mongodb://127.0.0.1:27017';
 
 const Quiz = require('./model/quizModel');
 
@@ -24,10 +25,6 @@ app.use((req, res, next) => {
 app.use('/user', userRoutes);
 app.use('/flashcard', flashcardRoutes);
 app.use('/quiz', quizRoutes);
-app.use('/user', userRoutes)
-app.use('/flashcard', flashcardRoutes)
-app.use('/quiz', quizRoutes)
-
 
 app.get("/", (req, res) => {
   res.json({
