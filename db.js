@@ -3,10 +3,7 @@ const { MongoClient } = require('mongodb');
 // Replace <password> with your actual MongoDB Atlas password
 const uri = "mongodb+srv://snjclarke133:4J6jxKS8LGqCnors@reddy34.wxuooam.mongodb.net/?retryWrites=true&w=majority";
 
-const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const client = new MongoClient(uri);
 
 async function connectToMongoDB() {
   try {
