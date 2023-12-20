@@ -4,6 +4,7 @@ const router = express.Router()
 const usersController = require('../controllers/users')
 
 router.get('/', usersController.index)
+router.patch('/update', usersController.updateScore)
 router.post('/login', usersController.login)
 router.post('/register', usersController.register)
 router.get('/:username', usersController.show)
