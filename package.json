@@ -7,7 +7,7 @@
     "dev": "nodemon -L server.js",
     "start": "nodemon -L server.js",
     "test": "jest --detectOpenHandles --runInBand --verbose --coverage",
-    "integrationTests": "jest --testPathPattern=/integration/quizEndpoints.spec.js --watchAll --detectOpenHandles --runInBand --verbose",
+    "integrationTests": "jest --testPathPattern=/integration/userEndpoints.spec.js --watchAll --detectOpenHandles --runInBand --verbose",
     "unitTests": "jest --testPathPattern=/unit/ --verbose",
     "coverage": "jest --testPathPattern=/unit/ --coverage",
     "integrationCoverage": "jest --testPathPattern=/integration/ --coverage"
