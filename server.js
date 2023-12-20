@@ -5,12 +5,11 @@ const flashcardRoutes = require('./routes/flashcardRoutes');
 const quizRoutes = require('./routes/quizRoutes');
 const cors = require('cors');
 const axios = require('axios');
-const { connectToMongoDB } = require('./db'); // Import the MongoDB connection function
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-connectToMongoDB(); // Call the MongoDB connection function
+const URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
 
 const Quiz = require('./model/quizModel');
 
@@ -35,8 +34,10 @@ app.get("/", (req, res) => {
 
 app.get("/api/questions/random", async (req, res) => {
   try {
-    const randomQuestion = await Quiz.aggregate([{ $sample: { size: 1 } }]);
-    res.json(randomQuestion[0]);
+    const count = await Quiz.countDocuments();
+    const randomIndex = Math.floor(Math.random() * count);
+    const randomQuestion = await Quiz.findOne().skip(randomIndex);
+    res.json(randomQuestion);
   } catch (error) {
     console.error('Error fetching random question:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -59,10 +60,7 @@ app.get("/fetch-and-store-trivia", async (req, res) => {
   }
 });
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(URI)
   .then(() => {
     console.log('Connected to MongoDB!');
     app.listen(port, () => {
