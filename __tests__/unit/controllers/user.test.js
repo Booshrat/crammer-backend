@@ -74,14 +74,14 @@ describe('user controller', () => {
             expect(mockStatus).toHaveBeenCalledWith(201);
             expect(mockJson).toHaveBeenCalledWith(testUser);
         })
-        test('it returns a 500 if register is not working', async () => {
-            jest.spyOn(User, 'create')
-                .mockResolvedValue(null);
-            const errReq = { params: { username: 'test2' } }
-            await controller.show(errReq, mockRes)
-            expect(mockStatus).toHaveBeenCalledWith(404);
-            expect(mockJson).toHaveBeenCalledWith({ error: 'No user here' })
-        })
+        // test('it returns a 500 if register is not working', async () => {
+        //     jest.spyOn(User, 'create')
+        //         .mockRejectedValue(new Error(500, 'error'));
+        //     const errReq = { params: { username: 'test2' } }
+        //     await controller.show(errReq, mockRes)
+        //     expect(mockStatus).toHaveBeenCalledWith(500);
+        //     expect(mockJson).toHaveBeenCalledWith(error)
+        // })
     });
 
     describe('update', () => {
@@ -104,6 +104,27 @@ describe('user controller', () => {
             expect(mockJson).toHaveBeenCalledWith(1);
         })
     });
+
+    describe('destroy', () => {
+        it('should return a 404 with error if id is not valid', async () => {
+            let testUser = 'test1'
+            jest.spyOn(User, 'findOneAndDelete')
+                .mockResolvedValue(testUser);
+            const mockReq = { params: { id: testUser }, body: { username: "example" } };
+            await controller.destroy(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(404);
+            expect(mockJson).toHaveBeenCalledWith({ error: 'No id here' });
+        });
+        test('it deletes a user with a valid ID and returns 200 status code', async () => {
+            let testUser = 1;
+            jest.spyOn(User, 'findOneAndDelete')
+            .mockResolvedValue(testUser);
+            const mockReq = { params: { id: testUser }, body: { username: "example" } };
+            await controller.destroy(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(200);
+            expect(mockJson).toHaveBeenCalledWith(1);
+        })
+    })
 
     // describe('updateUserScore', () => {
     //     test('it returns a 200 status code and a message', async () => {

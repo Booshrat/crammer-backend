@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const request = require('supertest')
-const app = require('../../server')
+const api = require('../../server')
 const env = require('dotenv')
 const resetTestDB = require('./config.js')
 env.config()
