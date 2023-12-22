@@ -46,8 +46,7 @@ MONGODB_URI='mongodb://127.0.0.1:27017'
 - created a model called user and built a database around that
 - then added in the flashcard and quiz models and linked them to the user model
 - this allowed me to make the features of the app only available to people who have registered and logged in
-- Whilst adding additional functionality to the app I started testing everything I could and have achieved 80% coverage
-![Alt text](image.png)
+- Whilst adding additional functionality to the app we started testing everything we could and have achieved 80% coverage
 
 # Wins and Challenges
 
