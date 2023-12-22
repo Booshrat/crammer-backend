@@ -22,8 +22,40 @@ Welcome, this is the Back-End Repository for the Crammer App and has been made b
 SECRET = 89272C7FB8E681E84EA9B7AA7945A3DFD0D45ACA421FC485CE7B0D0912A5D838
 MONGODB_URI='mongodb://127.0.0.1:27017'
 ```
+# Run on localhost
 - `npm run start` in terminal and app runs on (http://127.0.0.1:3000)
 - Once the backend is up and running visit the client repo which can be found here (https://github.com/Booshrat/crammer-frontend)
+# Run on web service
+
+To deploy the Crammer Educational App Back-End on Render, follow these steps:
+
+1. **Create a Render Account:**
+   - If you don't have a Render account, sign up at [Render](https://render.com/).
+
+2. **Set up MongoDB Atlas:**
+   - Create an account on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) if you don't have one.
+   - Create a new cluster and obtain the connection string.
+
+3. **Configure Environment Variables on Render:**
+   - In your Render dashboard, navigate to your Crammer Back-End service.
+   - Go to the **Environment** tab.
+   - Add the following environment variables:
+     ```env
+     SECRET=89272C7FB8E681E84EA9B7AA7945A3DFD0D45ACA421FC485CE7B0D0912A5D838
+     MONGODB_URI=<your MongoDB Atlas connection string>
+     ```
+
+4. **Deploy on Render:**
+   - Connect your GitHub repository to Render for automatic deployments.
+   - In the Render dashboard, click on **New Deployment**.
+   - Select your GitHub repository and the branch you want to deploy.
+   - Set the **Environment** to Node.js.
+   - Click **Create Web Service**.
+
+5. **Access your Deployed App:**
+   - Once the deployment is successful, Render provides you with a URL. Access your Crammer Back-End by navigating to this URL.
+
+Now, your Crammer Educational App Back-End is successfully deployed on Render. You can use the provided URL for your frontend application to interact with the backend services.
 
 # Technologies Used
 
