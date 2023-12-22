@@ -23,6 +23,7 @@ SECRET = 89272C7FB8E681E84EA9B7AA7945A3DFD0D45ACA421FC485CE7B0D0912A5D838
 MONGODB_URI='mongodb://127.0.0.1:27017'
 ```
 - `npm run start` in terminal and app runs on (http://127.0.0.1:3000)
+- Once the backend is up and running visit the client repo which can be found here (https://github.com/Booshrat/crammer-frontend)
 
 # Technologies Used
 
