@@ -16,6 +16,7 @@ const show = async (req, res) => {
     if (!user) {
         return res.status(404).json({ error: 'No user here' })
     }
+
     res.status(200).json(user)
 }
 
@@ -73,6 +74,16 @@ const update = async (req, res) => {
     res.status(200).json(user)
 }
 
+const updateScore = async (req, res) => {
+    const user = await User.findOneAndUpdate({ username: req.body.username }, {
+        $inc: {score: req.body.score}
+    })
+    if (!user) {
+        return res.status(404).json({ error: 'No user here' })
+    }
+    res.status(200).json(user)
+}
+
 const destroy = async (req, res) => {
     const { id } = req.params
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -85,4 +96,4 @@ const destroy = async (req, res) => {
     res.status(200).json(user)
 }
 
-module.exports = { index, login, register, show, destroy, update }
+module.exports = { index, login, register, show, destroy, updateScore, update }

@@ -23,27 +23,6 @@ const quizSchema = new mongoose.Schema({
             required: true,
         },
     },
-    tags: {
-        type: [String],
-        required: true,
-    },
-    type: {
-        type: String,
-        required: true,
-    },
-    difficulty: {
-        type: String,
-        required: true,
-    },
-    regions: {
-        type: [String],
-        default: [],
-    },
-    isNiche: {
-        type: Boolean,
-        default: false,
-    },
-    
 });
 
 const Quiz = mongoose.model('Quiz', quizSchema);

@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
     },
     score: {
         type: Number,
+        default: 0,
         min: [0, "A user cannot have a score less than 0"]
     },
     flashcards: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flashcard' }]

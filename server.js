@@ -9,7 +9,8 @@ require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-const URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
+const URI = process.env.MONGODB_URI 
+// || 'mongodb://127.0.0.1:27017';
 
 const Quiz = require('./model/quizModel');
 
@@ -63,10 +64,14 @@ app.get("/fetch-and-store-trivia", async (req, res) => {
 mongoose.connect(URI)
   .then(() => {
     console.log('Connected to MongoDB!');
-    app.listen(port, () => {
-      console.log(`Listening on port ${port}!`);
-    });
+    if (process.env.NODE_ENV !== 'test') {
+      app.listen(port, () => {
+          console.log(`Listening on port ${port}!`);
+        });
+    }
   })
   .catch((error) => {
     console.error('Error connecting to MongoDB:', error);
   });
+  
+module.exports = app;
