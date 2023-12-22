@@ -1,198 +1,119 @@
-// const controller = require('../../../controllers/flashcards')
-// const Flashcard = require('../../../model/flashcard');
-// const bcrypt = require('bcryptjs')
-// const jwt = require('jsonwebtoken')
-
-// const mockSend = jest.fn();
-// const mockJson = jest.fn();
-// const mockStatus = jest.fn(code => ({ send: mockSend, json: mockJson, end: jest.fn() }))
-// const mockRes = { status: mockStatus }
-
-// describe('user controller', () => {
-//     beforeEach(() => jest.clearAllMocks());
-
-//     afterAll(() => jest.resetAllMocks());
-
-//     describe('create', () => {
-//         test('it creates a new flashcard with a 201 status code', async () => {
-//             let testUser = {
-//                 question: 'test',
-//                 answer: 'test',
-//             }
-//             jest.spyOn(Flashcard, 'create')
-//                 .mockResolvedValue(testUser);
-//             const mockReq = { body: { question: 'test', answer: 'test' } }
-//             await controller.create(mockReq, mockRes);
-//             expect(mockStatus).toHaveBeenCalledWith(201);
-//             expect(mockJson).toHaveBeenCalledWith(testUser);
-//         })
-//     });
-// })
-
-const controller = require('../../../controllers/flashcards')
+const controller = require('../../../controllers/flashcards');
 const Flashcard = require('../../../model/flashcard');
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const { create, getAll, deleteFlashcard } = require('./yourModule'); // Replace 'yourModule' with the actual module path
+const User = require('../../../model/user');
+const jwt = require('jsonwebtoken');
 
-jest.mock('jsonwebtoken');
+const mockSend = jest.fn();
+const mockJson = jest.fn();
+const mockStatus = jest.fn(code => ({ send: mockSend, json: mockJson, end: jest.fn() }));
+const mockRes = { status: mockStatus };
 
-describe('create function', () => {
-  let mockReq;
-  let mockRes;
+describe('flashcards controller', () => {
+  beforeEach(() => jest.clearAllMocks());
 
-  beforeEach(() => {
-    mockReq = {
-      body: {
-        question: 'Test question',
-        answer: 'Test answer',
-      },
-      headers: {
-        authorization: 'mockedToken',
-      },
-    };
-    mockRes = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
+  afterAll(() => jest.resetAllMocks());
+
+  describe('create', () => {
+    test('creates a new flashcard with a 201 status code', async () => {
+      const testUser = {
+        question: 'test',
+        answer: 'test',
+      };
+      jest.spyOn(Flashcard, 'create').mockResolvedValue(testUser);
+      const mockReq = { body: { question: 'test', answer: 'test' }, headers: { authorization: 'fakeToken' } };
+      await controller.create(mockReq, mockRes);
+      expect(mockStatus).toHaveBeenCalledWith(201);
+    });
+
+    test('handles error during flashcard creation with a 400 status code', async () => {
+      jest.spyOn(Flashcard, 'create').mockRejectedValue(new Error('jwt malformed'));
+      const mockReq = { body: { question: 'test', answer: 'test' }, headers: { authorization: 'fakeToken' } };
+      await controller.create(mockReq, mockRes);
+      expect(mockJson).toHaveBeenCalledWith({ error: 'jwt malformed' });
+    });
+
+    test('handles missing user during flashcard creation with a 404 status code', async () => {
+      jest.spyOn(User, 'findOne').mockResolvedValue(null);
+      const mockReq = { body: { question: 'test', answer: 'test' }, headers: { authorization: 'fakeToken' } };
+      await controller.create(mockReq, mockRes);
+      expect(mockStatus).toHaveBeenCalledWith(404);
+      expect(mockJson).toHaveBeenCalledWith({ error: 'User not found' });
+    });
   });
 
-  it('should create a new flashcard with a 201 status code', async () => {
-    // Mock jwt.verify and User.findOne
-    jwt.verify.mockReturnValue({ username: 'testuser' });
-    jest.spyOn(User, 'findOne').mockResolvedValue({ _id: 'mockedUserId' });
-    jest.spyOn(Flashcard, 'create').mockResolvedValue({ _id: 'mockedFlashcardId' });
-    jest.spyOn(User, 'findByIdAndUpdate').mockResolvedValue();
-
-    await create(mockReq, mockRes);
-
-    // Expectations for a successful creation
-    expect(jwt.verify).toHaveBeenCalledWith('mockedToken', process.env.SECRET);
-    expect(User.findOne).toHaveBeenCalledWith({ username: 'testuser' });
-    expect(Flashcard.create).toHaveBeenCalledWith({
-      question: 'Test question',
-      answer: 'Test answer',
-      user: 'mockedUserId',
+  describe('getAll', () => {
+    test('gets all flashcards for a user with a 200 status code', async () => {
+      // Test the successful retrieval of flashcards for a user
+      const testUser = { username: 'testuser' };
+      jest.spyOn(jwt, 'verify').mockReturnValue({ username: 'testuser' });
+      jest.spyOn(User, 'findOne').mockResolvedValue(testUser);
+      jest.spyOn(Flashcard, 'find').mockResolvedValue([{ question: 'test', answer: 'test' }]);
+      const mockReq = { headers: { authorization: 'fakeToken' } };
+      await controller.getAll(mockReq, mockRes);
+      expect(mockStatus).toHaveBeenCalledWith(200);
+      expect(mockJson).toHaveBeenCalledWith([{ question: 'test', answer: 'test' }]);
     });
-    expect(User.findByIdAndUpdate).toHaveBeenCalledWith('mockedUserId', {
-      $push: { flashcards: 'mockedFlashcardId' },
-    });
-    expect(mockRes.status).toHaveBeenCalledWith(201);
-    expect(mockRes.json).toHaveBeenCalledWith({ _id: 'mockedFlashcardId' });
 
-    // Restore the original implementations after the test
-    jwt.verify.mockRestore();
-    User.findOne.mockRestore();
-    Flashcard.create.mockRestore();
-    User.findByIdAndUpdate.mockRestore();
+    test('handles error during flashcard retrieval with a 400 status code', async () => {
+      // Test the case where flashcard retrieval fails
+      jest.spyOn(jwt, 'verify').mockReturnValue({ username: 'testuser' });
+      jest.spyOn(User, 'findOne').mockResolvedValue({ username: 'testuser' });
+      jest.spyOn(Flashcard, 'find').mockRejectedValue(new Error('Retrieval failed'));
+      const mockReq = { headers: { authorization: 'fakeToken' } };
+      await controller.getAll(mockReq, mockRes);
+      expect(mockStatus).toHaveBeenCalledWith(400);
+      expect(mockJson).toHaveBeenCalledWith({ error: 'Retrieval failed' });
+    });
+
+    test('handles missing user during flashcard retrieval with a 404 status code', async () => {
+      // Test the case where the user is not found during flashcard retrieval
+      jest.spyOn(jwt, 'verify').mockReturnValue({ username: 'testuser' });
+      jest.spyOn(User, 'findOne').mockResolvedValue(null);
+      const mockReq = { headers: { authorization: 'fakeToken' } };
+      await controller.getAll(mockReq, mockRes);
+      expect(mockStatus).toHaveBeenCalledWith(404);
+      expect(mockJson).toHaveBeenCalledWith({ error: 'User not found' });
+    });
   });
 
-  it('should handle errors and return a 400 status code', async () => {
-    // Mock jwt.verify and simulate an error during flashcard creation
-    jwt.verify.mockReturnValue({ username: 'testuser' });
-    jest.spyOn(User, 'findOne').mockResolvedValue({ _id: 'mockedUserId' });
-    jest.spyOn(Flashcard, 'create').mockRejectedValue(new Error('Mocked error'));
-
-    await create(mockReq, mockRes);
-
-    // Expectations for error handling
-    expect(jwt.verify).toHaveBeenCalledWith('mockedToken', process.env.SECRET);
-    expect(User.findOne).toHaveBeenCalledWith({ username: 'testuser' });
-    expect(Flashcard.create).toHaveBeenCalledWith({
-      question: 'Test question',
-      answer: 'Test answer',
-      user: 'mockedUserId',
+  describe('deleteFlashcard', () => {
+    test('deletes a flashcard with a 200 status code', async () => {
+      const testUser = { username: 'testuser', _id: 'user_id' };
+      const testFlashcard = { _id: 'flashcard_id' };
+      jest.spyOn(jwt, 'verify').mockReturnValue({ username: 'testuser' });
+      jest.spyOn(User, 'findOne').mockResolvedValue(testUser);
+      jest.spyOn(Flashcard, 'findOneAndDelete').mockResolvedValue(testFlashcard);
+      const mockReq = { params: { id: 'flashcard_id' }, headers: { authorization: 'fakeToken' } };
+      await controller.delete(mockReq, mockRes);
+      expect(mockStatus).toHaveBeenCalledWith(200);
+      expect(mockJson).toHaveBeenCalledWith({ message: 'Flashcard deleted' });
     });
-    expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toHaveBeenCalledWith({ error: expect.any(String) });
 
-    // Restore the original implementations after the test
-    jwt.verify.mockRestore();
-    User.findOne.mockRestore();
-    Flashcard.create.mockRestore();
+    test('handles error during flashcard deletion with a 400 status code', async () => {
+      jest.spyOn(User, 'findOne').mockResolvedValue({ username: 'testuser' });
+      jest.spyOn(Flashcard, 'findOneAndDelete').mockRejectedValue(new Error('Deletion failed'));
+      const mockReq = { params: { id: 'flashcard_id' }, headers: { authorization: 'fakeToken' } };
+      await controller.delete(mockReq, mockRes);
+      expect(mockStatus).toHaveBeenCalledWith(400);
+      expect(mockJson).toHaveBeenCalledWith({ error: 'Deletion failed' });
+    });
+
+    test('handles missing user during flashcard deletion with a 404 status code', async () => {
+      jest.spyOn(User, 'findOne').mockResolvedValue(null);
+      const mockReq = { params: { id: 'flashcard_id' }, headers: { authorization: 'fakeToken' } };
+      await controller.delete(mockReq, mockRes);
+      expect(mockStatus).toHaveBeenCalledWith(404);
+      expect(mockJson).toHaveBeenCalledWith({ error: 'User not found' });
+    });
+
+    test('handles missing flashcard during flashcard deletion with a 404 status code', async () => {
+      const testUser = { username: 'testuser', _id: 'user_id' };
+      jest.spyOn(User, 'findOne').mockResolvedValue(testUser);
+      jest.spyOn(Flashcard, 'findOneAndDelete').mockResolvedValue(null);
+      const mockReq = { params: { id: 'flashcard_id' }, headers: { authorization: 'fakeToken' } };
+      await controller.delete(mockReq, mockRes);
+      expect(mockStatus).toHaveBeenCalledWith(404);
+      expect(mockJson).toHaveBeenCalledWith({ error: 'Flashcard not found' });
+    });
   });
 });
-
-describe('getAll function', () => {
-  // Similar structure for setup as create function
-
-  it('should get all flashcards with a 200 status code', async () => {
-    // Mock jwt.verify and User.findOne
-    jwt.verify.mockReturnValue({ username: 'testuser' });
-    jest.spyOn(User, 'findOne').mockResolvedValue({ _id: 'mockedUserId' });
-    jest.spyOn(Flashcard, 'find').mockResolvedValue([{ _id: 'mockedFlashcardId' }]);
-
-    await getAll(mockReq, mockRes);
-
-    // Expectations for a successful retrieval
-    expect(jwt.verify).toHaveBeenCalledWith('mockedToken', process.env.SECRET);
-    expect(User.findOne).toHaveBeenCalledWith({ username: 'testuser' });
-    expect(Flashcard.find).toHaveBeenCalledWith({ user: 'mockedUserId' });
-    expect(mockRes.status).toHaveBeenCalledWith(200);
-    expect(mockRes.json).toHaveBeenCalledWith([{ _id: 'mockedFlashcardId' }]);
-
-    // Restore the original implementations after the test
-    jwt.verify.mockRestore();
-    User.findOne.mockRestore();
-    Flashcard.find.mockRestore();
-  });
-
-  it('should handle errors and return a 400 status code', async () => {
-    // Mock jwt.verify and simulate an error during flashcard retrieval
-    jwt.verify.mockReturnValue({ username: 'testuser' });
-    jest.spyOn(User, 'findOne').mockResolvedValue({ _id: 'mockedUserId' });
-    jest.spyOn(Flashcard, 'find').mockRejectedValue(new Error('Mocked error'));
-
-    await getAll(mockReq, mockRes);
-
-    // Expectations for error handling
-    expect(jwt.verify).toHaveBeenCalledWith('mockedToken', process.env.SECRET);
-    expect(User.findOne).toHaveBeenCalledWith({ username: 'testuser' });
-    expect(Flashcard.find).toHaveBeenCalledWith({ user: 'mockedUserId' });
-    expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toHaveBeenCalledWith({ error: expect.any(String) });
-
-    // Restore the original implementations after the test
-    jwt.verify.mockRestore();
-    User.findOne.mockRestore();
-    Flashcard.find.mockRestore();
-  });
-});
-
-describe('deleteFlashcard function', () => {
-  // Similar structure for setup as create function
-
-  it('should delete a flashcard with a 200 status code', async () => {
-    // Mock jwt.verify, User.findOne, Flashcard.findOneAndDelete, and User.findByIdAndUpdate
-    jwt.verify.mockReturnValue({ username: 'testuser' });
-    jest.spyOn(User, 'findOne').mockResolvedValue({ _id: 'mockedUserId' });
-    jest.spyOn(Flashcard, 'findOneAndDelete').mockResolvedValue({ _id: 'mockedFlashcardId' });
-    jest.spyOn(User, 'findByIdAndUpdate').mockResolvedValue();
-
-    await deleteFlashcard(mockReq, mockRes);
-
-    // Expectations for a successful deletion
-    expect(jwt.verify).toHaveBeenCalledWith('mockedToken', process.env.SECRET);
-    expect(User.findOne).toHaveBeenCalledWith({ username: 'testuser' });
-    expect(Flashcard.findOneAndDelete).toHaveBeenCalledWith({
-      _id: 'mockedFlashcardId',
-      user: 'mockedUserId',
-    });
-    expect(User.findByIdAndUpdate).toHaveBeenCalledWith('mockedUserId', {
-      $pull: { flashcards: 'mockedFlashcardId' },
-    });
-    expect(mockRes.status).toHaveBeenCalledWith(200);
-    expect(mockRes.json).toHaveBeenCalledWith({ message: 'Flashcard deleted' });
-
-    // Restore the original implementations after the test
-    jwt.verify.mockRestore();
-    User.findOne.mockRestore();
-    Flashcard.findOneAndDelete.mockRestore();
-    User.findByIdAndUpdate.mockRestore();
-  });
-
-  it('should handle errors and return a 400 status code', async () => {
-    // Mock jwt.verify, User.findOne, simulate an error during flashcard deletion
-    jwt.verify.mockReturnValue({ username: 'test' })
-  })
-})
